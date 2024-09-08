@@ -1,6 +1,6 @@
 def menu():
     opcao = -1 #para não entrar em outras opções 
-    while opcao < 1 or opcao > 7:
+    while opcao < 1 or opcao > 8:
         print('--------------------------------------------------------------------------------------------------------------------')
         print('[ 1 ] - Por favor, escolha se você deseja fazer o cadastro no nosso aplicativo/site.')
         print('[ 2 ] - Por favor, escolha se você deseja fazer o login no nosso aplicativo/site.')
@@ -8,9 +8,10 @@ def menu():
         print('[ 4 ] - Por favor, escolha esta opção para descobrir as oficinas disponíveis mais próximas de você.')
         print('[ 5 ] - Avaliação do cliente')
         print('[ 6 ] - Por favor, escolha essa opção se você não conseguiu achar o que queria, iremos mostrar o número do guincho, o seuguro e o bombeiro')
-        print('[ 7 ]- Sair do Programa')
+        print('[ 7 ] - Por favor, escolha essa opção se você quer ver as informações da empresa')
+        print('[ 8 ]- Sair do Programa')
         opcao = int(input('Digite uma opção: ')) #usuário irá escolher uma opção do print
-        if (opcao < 1) or (opcao > 5): # se o usuário escolhe um opção inválida irá retorna para a pergunta
+        if (opcao < 1) or (opcao > 8): # se o usuário escolhe um opção inválida irá retorna para a pergunta
             print('Opção inválida')
         else: 
             return opcao # irá retorna a opção que o usuário escolheu
@@ -102,7 +103,7 @@ def fazer_cadastro(nome, email, senha, telefone, usuario_cadastro):
         else:
             print("Tente novamente, por favor")
             nome, email, senha, telefone = cadastro_perguntas() # Repetir perguntas
-    return usuario_cadastro
+        return usuario_cadastro
 
 # ----------------- Login ---------------------------------------
 
@@ -174,15 +175,8 @@ def possivel_solucao(desc_problema):
     return "Não conseguimos identificar, digite novamente, ou pessa ajuda alguém do nosso servirço"
 
 #------------------------- Oficinas mais próximas --------------------------------
-"""def oficinas_disponiveis():
-    lista_oficina = {"nome": "Zé Oficina", "distância em km": 1.5, "referencia": "Centro São Paulo",
-                    "nome": "Auto Car", "distância em km": 3.0, "referencia": "Paulista ",
-                    "nome": "Carbon Auto Mecanica", "distância em km": 4.5, "referencia": "Castelo Branco",
-                    "nome": "Auto Mecânica Hitoshi", "distância em km": 3.5, "referencia": "Vila Mariana",
-                    "nome": "Johny Car", "distância em km": 2.5, "referencia": "Vila Madelena"
-                    }   
-    return lista_oficina
-[ 2 ] está localizada a 3.0km da Paulista  """
+
+
 def imprimir_oficinas():
     escolha = -1 #para não entrar em outras opções 
     while escolha < 1 or escolha > 5:
@@ -244,6 +238,12 @@ def servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho):
     print(f'A seguir o número do guincho da Porto Seguro: {ligar_guincho}')
 
 
+#------------------------------ Informações ----------------------------------------
+def informacoes_empresa():
+    print('dfsdfsdfsdfsdfsdfsd')
+
+
+
 #------------------------ Main ----------------------------
 def main(opcao):
     usuario_cadastro = []
@@ -251,26 +251,29 @@ def main(opcao):
         case 1:
             lista_cadastro = cadastro_lista()
             nome, email, senha, telefone = cadastro_perguntas()
-            usuario_cadastro = fazer_cadastro(nome, email, senha, telefone, lista_cadastro)
+            fazer_cadastro(nome, email, senha, telefone, lista_cadastro)
         case 2:
             email_login, senha_login = login_perguntas()
-            usuario = fazer_login(email_login, senha_login, usuario_cadastro)
+            fazer_login(email_login, senha_login, lista_cadastro)
         case 3:
             desc_problema = descricao_problema()
             print(possivel_solucao(desc_problema))
         case 4:
-            print('fgvrg')
+            escolha = imprimir_oficinas()
+            escolha_usuario(escolha)
         case 5:
-            nome_cliente, nome_oficina, avaliacao = pergunta_avaliacao_cliente
+            pergunta_avaliacao_cliente()
         case 6:
             ligar_seguro, ligar_bombeiro, ligar_guincho = servixo_extra()
-            servico = servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho)
+            servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho)
         case 7:
-            print('Programa encerrado') #encerra o programa
+           informacoes_empresa()
+        case 8:
+             print('Programa encerrado') #encerra o programa
 
 
 #Principal 
 opcao = -1
-while opcao != 7:
+while opcao != 8:
     opcao = menu()
     result = main(opcao)
