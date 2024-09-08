@@ -246,6 +246,7 @@ def servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho):
 
 #------------------------ Main ----------------------------
 def main(opcao):
+    usuario_cadastro = []
     match opcao:
         case 1:
             lista_cadastro = cadastro_lista()
