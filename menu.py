@@ -245,35 +245,36 @@ def informacoes_empresa():
 
 
 #------------------------ Main ----------------------------
-def main(opcao):
+def main():
     usuario_cadastro = []
-    match opcao:
-        case 1:
+    while True:
+        opcao = menu()
+
+        if opcao == 1:
             lista_cadastro = cadastro_lista()
             nome, email, senha, telefone = cadastro_perguntas()
             fazer_cadastro(nome, email, senha, telefone, lista_cadastro)
-        case 2:
+        elif opcao == 2:
             email_login, senha_login = login_perguntas()
             fazer_login(email_login, senha_login, lista_cadastro)
-        case 3:
+        elif opcao == 3:
             desc_problema = descricao_problema()
             print(possivel_solucao(desc_problema))
-        case 4:
+        elif opcao == 4:
             escolha = imprimir_oficinas()
             escolha_usuario(escolha)
-        case 5:
+        elif opcao == 5:
             pergunta_avaliacao_cliente()
-        case 6:
+        elif opcao == 6:
             ligar_seguro, ligar_bombeiro, ligar_guincho = servixo_extra()
             servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho)
-        case 7:
-           informacoes_empresa()
-        case 8:
-             print('Programa encerrado') #encerra o programa
+        elif opcao == 7:
+            informacoes_empresa()
 
+        refazer = input("Deseja continuar? (s/n)")
+        if refazer != "s":
+            print("Muito Obrigado")
+            break
 
 #Principal 
-opcao = -1
-while opcao != 8:
-    opcao = menu()
-    result = main(opcao)
+main()
