@@ -5,11 +5,12 @@ def menu():
         print('[ 1 ] - Por favor, escolha se você deseja fazer o cadastro no nosso aplicativo/site.')
         print('[ 2 ] - Por favor, escolha se você deseja fazer o login no nosso aplicativo/site.')
         print('[ 3 ] - Por favor, descreva qual é o problema que está ocorrendo com o seu veículo.')
-        print('[ 4 ] - Por favor, escolha esta opção para descobrir as oficinas disponíveis mais próximas de você.')
-        print('[ 5 ] - Avaliação do cliente')
-        print('[ 6 ] - Por favor, escolha essa opção se você não conseguiu achar o que queria, iremos mostrar o número do guincho, o seuguro e o bombeiro')
-        print('[ 7 ] - Por favor, escolha essa opção se você quer ver as informações da empresa')
-        print('[ 8 ]- Sair do Programa')
+        print("[ 4 ] - Por favor, escolha essa opção se você deseja adicionar nova Oficinas no catalago")
+        print('[ 5 ] - Por favor, escolha esta opção para descobrir as oficinas disponíveis mais próximas de você.')
+        print('[ 6 ] - Avaliação do cliente')
+        print('[ 7 ] - Por favor, escolha essa opção se você não conseguiu achar o que queria, iremos mostrar o número do guincho, o seuguro e o bombeiro')
+        print('[ 8 ] - Por favor, escolha essa opção se você quer ver as informações da empresa')
+        print('[ 9 ]- Por favor, escolha essa opção se você deseja adicionar as caracteristicas do seu carro')
         opcao = int(input('Digite uma opção: ')) #usuário irá escolher uma opção do print
         if (opcao < 1) or (opcao > 8): # se o usuário escolhe um opção inválida irá retorna para a pergunta
             print('Opção inválida')
@@ -23,21 +24,85 @@ def cadastro_lista(): #criar a lista para guardar as informações do usuário
     usuario_cadastro = []
     return usuario_cadastro
 
-def cadastro_perguntas():
+def inserir_usuario_cadastro(): #vamos inserir as variáveis para criar o cadastro usuário
     nome = input("Digite o seu nome: ")
     email = input("Digite o seu email: ")
-    senha = input("Digite o sua senha (somente número de 0 ao 9, e até 8 dígitos): ")
+    senha = input("Digite a sua senha (precisa ser menor do que 8 caracters): ")
     telefone = input("Digite a sua senha (ddd + os 9 dígitos): ")
-    return nome, email, senha, telefone
+    cpf = input("Digite o seu cpf: ")
+    return nome, email, senha, telefone, cpf
+
+def alterar_usuario_cadastro(usuario_cadastro): #alterar a informação do usuário caso ele queira por meio do cpf
+    alterar = input("Para alterar os dados do seu cadastro, por favor digite o seu CPF:  ")
+
+    for usuario in usuario_cadastro: #o loop está percorrendo cada elemento da lista
+        if usuario['cpf'] == alterar: # compara se o cpf é igual ao alterar 
+            print("Usuário encontrado. Por favor, insira os novos dados caso queira alterar, se não digite o antigo")
+
+            novo_nome = input(f"Nome atual ({usuario['nome']}): ") 
+            novo_email = input(f"Email atual ({usuario['email']}): ")
+            nova_senha = input(f"Senha atual ({usuario['senha']}): ")
+            novo_telefone = input(f"Telefone atual ({usuario['telefone']}): ")
+
+            #ele verifica se tem dados nas variávies, se tiver irá atualizar o dados que foi escrito encima, se o usuário não mudou irá continuar o mesmo
+            if novo_nome:
+                usuario['nome'] = novo_nome
+            if novo_email:
+                usuario['email'] = novo_email
+            if nova_senha:
+                usuario['senha'] = nova_senha
+            if novo_telefone:
+                usuario['telefone'] = novo_telefone
+            
+            print("Cadastro alterado com sucesso!")
+            return
+        
+    print("CPF não encontrado, tente novamente.") 
+    alterar_usuario_cadastro(usuario_cadastro) 
+
+
+def delete_usuario_cadastro(usuario_cadastro): #deletar as o cadastro do usuário
+    delete = input("Deletação do seu cadastro, por favor digite o seu CPF:  ")
+
+    for usuario in usuario_cadastro:
+        if usuario['cpf'] == delete:
+            usuario_cadastro.remove(usuario)
+            print("Usuário deletado com sucesso")
+            return
+        
+    print("Não enconstramos seu CPF, tente novamente")  
+    delete_usuario_cadastro(usuario_cadastro)          
+
+
+def read__usuario_cadastro(usuario_cadastro): #vai o que foi cadastrado
+    read = input("Para ver o seu cadastro, por favor digite o seu CPF:  ")
+    for usuario in usuario_cadastro:
+        if usuario['cpf'] == read:
+            nome = usuario.get('nome')
+            email = usuario.get('email')
+            senha = usuario.get('senha')
+            telefone = usuario.get('telefone')
+            cpf = usuario.get("cpf")
+
+        else:
+            print("Não enconstramos seu CPF, tente novamente")  
+            read__usuario_cadastro(usuario_cadastro)
+
+    print(f"Nome: {nome}")
+    print(f"Email: {email}")
+    print(f"Senha: {senha}")
+    print(f"Telefone: {telefone}")
+    print(f"CPF: {cpf}")
+
 
 def validacao_nome(nome):
     print("**- Validação nome -**")
     if not nome:
-        print("O nome está vázio, coloque o seu nome!!")
+        print("O nome está vazio, coloque o seu nome!!")
         print("------------------------")
         return False
     if not nome.istitle():
-        print("Por favor tente novamente, algo deu errado. A primeira letra de cada nome tem que ser letra maiúscula")
+        print("Por favor tente novamente, algo deu errado. A primeira letra de cada palavra tem que ser letra maiúscula")
         print("------------------------")
         return False
     return True
@@ -45,10 +110,10 @@ def validacao_nome(nome):
 def validacao_email(email):
     print("**- Validação email -**")
     if not email:
-        print("O email está vázio, coloque o seu email!!")
+        print("O email está vazio, coloque o seu email!!")
         print("------------------------")
         return False
-    if '@' not in email or '.' not in email: #verificação do email
+    if '@' not in email or '.' not in email: 
         print('Por favor tente novamente, algo deu errado! Seu email pode estar inválido é necessário ter o @gmail.com')
         print("------------------------")
         return False
@@ -57,11 +122,11 @@ def validacao_email(email):
 def validacao_senha(senha):
     print("**- Validação senha -**")
     if not senha:
-        print("A senha está vázia, coloque a sua senha!!")
+        print("A senha está vazia, coloque a sua senha!!")
         print("------------------------")
         return False
-    if not senha.isdigit() or len(senha) > 8:
-        print('Senha inválida, por favor tente novamente')
+    if not len(senha) < 8:
+        print('Senha inválida, por favor tente novamente (tem que ser meno que 8 caracteres)')
         print("------------------------")
         return False
     return True
@@ -69,20 +134,32 @@ def validacao_senha(senha):
 def validacao_telefone(telefone):
     print("**- Validação telefone -**")
     if not telefone:
-        print("O telefone está vázio, coloque o seu telefone!!")
+        print("O telefone está vazio, coloque o seu telefone!!")
         print("------------------------")
         return False
     if not telefone.isdigit() and len(telefone) != 11:
-        print('Telefone inválido, por favor tente novamente')
+        print('Telefone inválido, por favor tente novamente (ddd + telefone)')
+        print("------------------------")
+        return False
+    return True
+
+def validacao_cpf(cpf):
+    print("**- Validação do CPF -**")
+    if not cpf:
+        print("O CPF está vazio, coloque o seu telefone!!")
+        print("------------------------")
+    if not cpf.isdigit() and len(cpf) != 14:
+        print("O CPF está incorreto, você só deve digitar os 11 números e três traços")
         print("------------------------")
         return False
     return True
 
 
-def fazer_cadastro(nome, email, senha, telefone, usuario_cadastro):
+
+def fazer_cadastro(nome, email, senha, telefone, cpf, usuario_cadastro):
     while True:
         valido = True
-        if not validacao_nome(nome):
+        if not validacao_nome(nome): #verifica se a validações das variáveis são falsas
             valido = False
         if not validacao_email(email):
             valido = False
@@ -91,18 +168,19 @@ def fazer_cadastro(nome, email, senha, telefone, usuario_cadastro):
         if not validacao_telefone(telefone):
             valido = False
         
-        if valido:
+        if valido: #se for valido os dados irá ser cadastrado
             usuario_cadastro.append({
                 'nome': nome,
                 'email': email,
                 'senha': senha,
-                'telefone': telefone
+                'telefone': telefone,
+                'cpf' : cpf
             })
-            print("Cadastro feito com sucesso!") # Mensagem de sucesso
+            print("Cadastro feito com sucesso!") 
             break # sair do loop se tudo estiver de acordo com as validações
         else:
             print("Tente novamente, por favor")
-            nome, email, senha, telefone = cadastro_perguntas() # Repetir perguntas
+            nome, email, senha, telefone, cpf = inserir_usuario_cadastro() 
         return usuario_cadastro
 
 # ----------------- Login ---------------------------------------
@@ -174,10 +252,38 @@ def possivel_solucao(desc_problema):
             return solucao
     return "Não conseguimos identificar, digite novamente, ou pessa ajuda alguém do nosso servirço"
 
+def inserir_descricao_problema():
+    novas_solucoes = input("Adicionar mais soluções para os problemas de carro: ")
+    return novas_solucoes
+
+def alterar_descricao_problema(solucoes):
+    problema = input("Digite o problema que deseja alterar: ").lower()
+    if problema in solucoes:
+        nova_solucao = input("Digite a nova solução para o problema: ")
+        solucoes[problema] = nova_solucao
+        print("Solução alterada com sucesso")
+    else:
+        print("Problema não enconstrado")    
+
+def delete_descricao_problema(solucoes):
+    problema = input("Digite o problema que deseja delete: ").lower()
+    if problema in solucoes:
+        del solucoes[problema]
+        print("Solução deletada com sucesso")
+    else:
+        print("Problema não enconstrado")  
+
+def read_descricao_problema(solucoes, desc_problema):
+        for palavra, solucao in solucoes.items():
+            if palavra in desc_problema:
+                print(f"Solução: {solucao}")
+        
 #------------------------- Oficinas mais próximas --------------------------------
+""""def imprimir_oficinas(lista_oficinas):
+    for i, oficina in enumerate(lista_oficinas, 1):
+        print(f"[{i}] {oficina}")"""
 
-
-def imprimir_oficinas():
+"""def imprimir_oficinas():
     escolha = -1 #para não entrar em outras opções 
     while escolha < 1 or escolha > 5:
         print('''
@@ -186,26 +292,184 @@ def imprimir_oficinas():
         [ 2 ]Auto Car está localizada a 3.0km da Paulista  
         [ 3 ]CARBON AUTO MECANICA está localizada a 4.5km da Castelo Branco 
         [ 4 ]Auto Mecânica Hitoshi está localizada a 3.5km da Vila Mariana  
-        [ 5 ]Johny Car está localizada a 2.5km da Madelen''')
+        [ 5 ]Johny Car está localizada a 2.5km da Madelen
+        [ 6 ]Escolha esse opção se você deja adicionar mias oficina''')
 
         escolha = int(input('Por favor, escolha o número da Oficina mais perto de você: '))
         if (escolha < 1) or (escolha > 5): # se o usuário escolhe um opção inválida irá retorna para a pergunta
             print('Opção inválida, tente novamente')
         else: 
-            return escolha # irá retorna a opção que o usuário escolheu
+            return escolha # irá retorna a opção que o usuário escolheu"""
+        
 
-def escolha_usuario(escolha):
+"""def escolha_usuario(escolha):
     #irá verificar o que o usuário escolhe e da uma dessas opções
     if escolha in [1,2,3,4,5]:
-        print('Parabéns pela escolha, o mecânico estará te esperando.')
+        print('Parabéns pela escolha, o mecânico estará te esperando.')"""
+
+
+
+
+
+def inserir_oficina():
+    lista_oficina = []
+    nome = input("Adicionar nome Oficina: ")
+    endereco = input("Adicionar endereço da Oficina: ")
+    cnpj = input("Digite o CNPJ da sua Oficina: ")
+
+    return lista_oficina, nome, endereco, cnpj
+
+
+def append_lista_oficina(lista_oficina, nome, endereco, cnpj):
+    lista_oficina.append({
+        'nome_oficina': nome,
+        'endereco_oficina': endereco,
+        'cnpj_oficina': cnpj
+    })
+    print("Oficina cadastrada com sucesso")
+    return lista_oficina
+
+
+def alterar_oficina(lista_oficina):
+    alterar = input("Para alterar o seu cadastro, por favor digite o seu CNPJ: ")
+
+    for oficina in lista_oficina:
+        if oficina['cnpj_oficina'] == alterar:
+            print("Oficina encontrada, por favor insira os novos dados caso que ira alterar, se não digite o antigo")
+
+            novo_nome = input(f"Nome atual ({oficina['nome_oficina']}): ")
+            novo_endereco = input(f"Endereço atual ({oficina['endereco_oficina']}): ")
+            
+            if novo_nome:
+                oficina['nome_oficina'] = novo_nome
+            if novo_endereco:
+                oficina['endereco_oficina'] = novo_endereco
+
+            print("Oficina alterada com sucesso")
+            return
+        else:
+            print("CNPJ não encontrado, tente novamente.")  
+            alterar_oficina(lista_oficina)     
+
+def delete_oficina(lista_oficina):
+    delete = input("Para delete o seu cadastro da oficina, por favor digite o seu CNPJ: ")
+
+    for oficina in lista_oficina:
+        if oficina['cnpj_oficina'] == delete:
+                lista_oficina.remove(oficina)
+                print("Oficina deletada com sucesso")
+                return
+        else:
+            print("Não enconstramos seu cpf, tente novamente")  
+            delete_oficina(lista_oficina)
+        
+            
+def read_oficina(lista_oficina):   
+    for oficina in lista_oficina:
+        nome = oficina.get('nome_oficina')        
+        endereco = oficina.get('endereco_oficina') 
+        cnpj = oficina.get('cnpj_oficina')    
+
+    print(f"Nome da oficina: {nome}  ")    
+    print(f"Endereço: {endereco}")
+    print(f"CNPJ: {cnpj}")
+
+def escolher_oficina(lista_oficinas):
+    busca = input("Digite o nome ou parte do nome da oficina que deseja encontrar: ")
+    resultados = []
+    for oficina in lista_oficinas:
+        if busca.lower() in oficina.nome.lower():
+            resultados.append(oficina)
+
+    if resultados:
+        for i, oficina in enumerate(resultados, 1):
+            print(f"[{i}] {oficina}")
+        escolha = int(input("Escolha a oficina pelo número: ")) - 1
+        return resultados[escolha]
+    else:
+        print("Nenhuma oficina encontrada.")
+        return None
+
 
 
 # ------------------------------ Avaliação Cliente --------------------------
-def pergunta_avaliacao_cliente():
+def lista_avaliacoes():
+    lista_avaliacao = []
+    return lista_avaliacao
+
+
+
+def inserir_avaliacao_cliente():
     nome_cliente = input("Digite o seu nome: ")
     nome_oficina = input("Digite a oficina que você foi atendido(a): ")
     avaliacao = input("De uma nota de 1 a 5 para o atendimento feito: ")
-    return nome_cliente, nome_oficina, avaliacao
+    cpf = input("Digite o seu CPF: ")
+    return nome_cliente, nome_oficina, avaliacao, cpf
+
+def append_lista(lista_avaliacao, nome_cliente, nome_oficina, avaliacao, cpf):
+    lista_avaliacao.append({
+        'nome' : nome_cliente,
+        'oficina' : nome_oficina,
+        'avaliacao' : avaliacao,
+        'cpf' : cpf
+        
+    })
+    print("Avaliacao criado com sucesso")
+    return lista_avaliacao
+    
+
+
+def alterar_avaliacao_cliente(lista_avaliacao):
+    alterar = input("Para alterar o sua avaliacao, por favor digite o seu CPF:")
+
+    for avaliacao in lista_avaliacao:
+        if avaliacao['cpf'] == alterar:
+            print("Avaliação encontrada, por favor insira os novos dados caso queira alterar, se não digite o antigo")
+            
+            novo_nome = input(f"Nome atual ({avaliacao['nome']}): ")
+            nova_oficina = input(f"Oficina atual ({avaliacao['oficina']})")
+            nova_avaliacao = input(f"Avaliação atual ({avaliacao['avaliacao']})")
+
+            if novo_nome:
+                avaliacao['nome'] = novo_nome
+            if nova_oficina:
+                avaliacao['oficina'] =  nova_oficina
+            if nova_avaliacao:
+                avaliacao['avaliacao'] = nova_avaliacao
+
+            print("Alterado com sucesso")
+            return
+
+        else:
+            print("CPF não enconstrado, tente novamente")   
+            alterar_avaliacao_cliente(lista_avaliacao) 
+
+def delete_avaliacao(lista_avaliacao):
+    delete = input("Para deletar a sua avaliacao, por favor digite o seu CPF:")
+
+    for avaliacao in lista_avaliacao:
+        if avaliacao['cpf'] == delete:
+            lista_avaliacao.remove(avaliacao)
+            print("Avaliação deletada com sucesso")
+            return
+        else:
+            print("Não encontramos seu CPF, tente novamente")
+            delete_avaliacao(lista_avaliacao)
+
+def read_avaliacao(lista_avaliacao):
+    if not lista_avaliacao:
+        print("Nenhuma avaliação encontrada.")
+        return
+    
+    for avaliacao in lista_avaliacao:
+        print(f"Nome do Cliente: {avaliacao['nome']}")
+        print(f"Nome da Oficina: {avaliacao['oficina']}")
+        print(f"Avaliação: {avaliacao['avaliacao']}")
+        print(f"CPF: {avaliacao['cpf']}")
+            
+
+
+
 
 def validacao_avaliacao(avaliacao):
     if not avaliacao:
@@ -242,36 +506,225 @@ def servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho):
 def informacoes_empresa():
     print('dfsdfsdfsdfsdfsdfsd')
 
+#-------------------------- Adicionar carro -------------------------------
+def criar_lista_carro():
+    carros = []
+    return carros
+
+def inserir_carro():
+    marca = input("Digite a MARCA do seu carro: ")
+    modelo = input ("Digite o MODELO do seu carro: ")
+    ano = int(input("Digite o ano do seu carro: "))
+    quilometragem = float(input("Digite a quilometragem do seu carro (km): "))
+    placa = input("Digite a sua placa: ")
+    return marca, modelo, ano, quilometragem, placa
+
+def adicionar_carro(marca, modelo, ano, quilometragem, placa, carros):
+    while True:
+        carros.append({
+            'marca' : marca,
+            'modelo' : modelo,
+            'ano' : ano,
+            'quilometragem' : quilometragem,
+            'placa' : placa,
+        })
+        print("Carro cadastrado com sucesso!")
+    
+        return carros
+    
+
+def alterar_carro(carros):
+    alterar = input("Para alterar o seu cadastro carro, por favor digite a sua PLACA:")  
+
+    for carro in carros:
+        if carro['placa'] == alterar:
+            print("Carro encontrado, por favor insira os novos dados caso que ira alterar, se não digite o antigo")
+
+            marca = input(f"Marca atual: ({carro['marca']})")
+            modelo = input(f"Modelo atual ({carro['modelo']})")
+            ano = int(input(f"Ano atual ({carro['ano']})"))
+            km = float(input(f"Quilometragem atual ({carro['quilometragem']})"))
+            
+            if marca:
+                carro['marca'] = marca
+            if modelo:
+                carro['modelo'] = modelo
+            if ano:
+                carro['ano'] = ano
+            if km:
+                carro['quilometragem'] = km
+
+            print("Alterado com sucesso")
+            return
+        
+        else:
+            print("Placa não encontrado, tente novamente.")   
+            alterar_carro(carros)        
+
+def delete_carro(carros):
+    delete = input("Para deletar o seu cadastro carro, por favor digite a sua PLACA:  ")
+
+    for carro in carros:
+        if carro['placa'] == delete:
+            carros.remove(carro)
+            print("Carro deletado com sucesso")
+            return
+        else:
+            print("Não enconstramos sua PLACA, tente novamente")  
+            delete_carro(carros)
+
+def read_carro(carros):
+    for carro in carros:
+        marca = carro.get('marca')
+        modelo = carro.get('modelo')
+        ano = carro.get('ano') 
+        quilometragem = carro.get('quilometragem')
+        placa = carro.get('placa')  
+
+    print(f"Marca: {marca}, Modelo: {modelo}, Ano: {ano}, Quilometragem: {quilometragem}, Placa: {placa}")             
+
+
+    
+
+def crud_perguntas(): 
+    escolha = -1
+    while escolha < 1 or escolha > 4:
+        print("---------------------------------------------------------------------")
+        print("(1) - Você deseja inserir os dados da opção escolhida?")
+        print("(2) - Você quer fazer alguma alteração dos dados?")
+        print("(3) - Você deseja deletar o dado")
+        print("(4) - Você deseja vizualizar todos os dados cadastrados?")
+        escolha = int(input("Escolha uma opção de 1 ao 4: "))
+        if (escolha < 1) or (escolha > 8):
+            print('Opção inválida')
+        else: 
+            return escolha
+        
+
+
+
 
 
 #------------------------ Main ----------------------------
 def main():
     usuario_cadastro = []
+    lista_oficina = []
+    lista_avaliacao = []
+    carros = []
     while True:
         opcao = menu()
 
         if opcao == 1:
-            lista_cadastro = cadastro_lista()
-            nome, email, senha, telefone = cadastro_perguntas()
-            fazer_cadastro(nome, email, senha, telefone, lista_cadastro)
+            escolha = crud_perguntas()
+            while True:
+                if  escolha == 1:
+                    usuario_cadastro = cadastro_lista()
+                    nome, email, senha, telefone, cpf = inserir_usuario_cadastro()
+                    fazer_cadastro(nome, email, senha, telefone, cpf,  usuario_cadastro)    
+                elif  escolha == 2:
+                    alterar_usuario_cadastro(usuario_cadastro)
+                elif  escolha == 3:
+                    delete_usuario_cadastro(usuario_cadastro)
+                elif  escolha == 4:
+                    read__usuario_cadastro(usuario_cadastro) 
+            
+                crud_refazer = input("Deseja continuar a fazer o CRUD? (s/n)").lower() 
+                if crud_refazer == "s":
+                    escolha = crud_perguntas()
+                else:
+                    opcao = menu()    
+                    break
+
         elif opcao == 2:
             email_login, senha_login = login_perguntas()
-            fazer_login(email_login, senha_login, lista_cadastro)
+            fazer_login(email_login, senha_login, usuario_cadastro)                 
+            
         elif opcao == 3:
             desc_problema = descricao_problema()
             print(possivel_solucao(desc_problema))
+
         elif opcao == 4:
-            escolha = imprimir_oficinas()
-            escolha_usuario(escolha)
+            escolha = crud_perguntas()
+            while True:
+                if escolha == 1:
+                    lista_oficina, nome, endereco, cnpj = inserir_oficina()
+                    append_lista_oficina(lista_oficina, nome, endereco, cnpj)
+                elif escolha == 2:
+                    alterar_oficina(lista_oficina)
+                elif escolha == 3:    
+                    delete_oficina(lista_oficina)
+                elif escolha == 4:
+                        read_oficina(lista_oficina)
+
+                crud_refazer = input("Deseja continuar a fazer o CRUD? (s/n)").lower() 
+                if crud_refazer == "s":
+                    escolha = crud_perguntas()
+                else:
+                    opcao = menu()    
+                    break        
         elif opcao == 5:
-            pergunta_avaliacao_cliente()
+            escolher_oficina(lista_oficina)
+            
         elif opcao == 6:
+            escolha = crud_perguntas()
+            while True:
+                if escolha == 1:
+                    lista_avaliacao = lista_avaliacoes()
+                    nome_cliente, nome_oficina, avaliacao, cpf =inserir_avaliacao_cliente()
+                    append_lista(lista_avaliacao, nome_cliente, nome_oficina, avaliacao, cpf)
+                    
+                elif escolha == 2:
+                    alterar_avaliacao_cliente(lista_avaliacao)
+
+                elif escolha == 3:
+                    delete_avaliacao(lista_avaliacao)
+
+                elif escolha == 4:    
+                    read_avaliacao(lista_avaliacao)
+
+                crud_refazer = input("Deseja continuar a fazer o CRUD? (s/n)").lower() 
+                if crud_refazer == "s":
+                    escolha = crud_perguntas()
+                else:
+                    opcao = menu()    
+                    break         
+
+        elif opcao == 7:
             ligar_seguro, ligar_bombeiro, ligar_guincho = servixo_extra()
             servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho)
-        elif opcao == 7:
+
+
+        elif opcao == 8:
             informacoes_empresa()
 
-        refazer = input("Deseja continuar? (s/n)")
+        elif opcao == 9:
+            escolha = crud_perguntas()
+            while True:
+                if escolha == 1:
+                    carros = criar_lista_carro()
+                    marca, modelo, ano, quilometragem, placa = inserir_carro()
+                    adicionar_carro(marca, modelo, ano, quilometragem, placa, carros)
+
+                elif escolha == 2:
+                    alterar_carro(carros)
+
+                elif escolha == 3:
+                    delete_carro(carros)
+
+                elif escolha == 4:
+                    read_carro(carros)
+
+                crud_refazer = input("Deseja continuar a fazer o CRUD? (s/n)").lower() 
+                if crud_refazer == "s":
+                    escolha = crud_perguntas()
+                else:
+                    opcao = menu()    
+                    break     
+
+
+
+
+        refazer = input("Deseja continuar? (s/n)").lower()
         if refazer != "s":
             print("Muito Obrigado")
             break

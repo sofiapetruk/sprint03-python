@@ -4,12 +4,68 @@ def cadastro_lista(): #criar a lista para guardar as informações do usuário
     usuario_cadastro = []
     return usuario_cadastro
 
-def cadastro_perguntas():
+
+def inserir_usuario_cadastro():
+    
     nome = input("Digite o seu nome: ")
     email = input("Digite o seu email: ")
     senha = input("Digite o sua senha (somente número de 0 ao 9, e até 8 dígitos): ")
     telefone = input("Digite a sua senha (ddd + os 9 dígitos): ")
-    return nome, email, senha, telefone
+    cpf = input("Digite o seu cpf: ")
+    return nome, email, senha, telefone,cpf
+
+def alterar_usuario_cadastro(usuario_cadastro):
+    delete = input("Para alterar o seu cadastro, por favor digite o seu CPF:  ")
+
+    for usuario in usuario_cadastro:
+        if usuario['cpf'] == delete:
+            print("Usuário enconstrado, por favor insira os novos dados caso que ira alterar, se não digite o antigo")
+
+            novo_nome = input(f"Nome atual ({usuario['nome']}): ")
+            novo_email = input(f"Email atual ({usuario['email']}): ")
+            nova_senha = input(f"Senha atual ({usuario['senha']}): ")
+            novo_telefone = input(f"Telefone atual ({usuario['telefone']}): ")
+
+            
+            if novo_nome:
+                usuario['nome'] = novo_nome
+            if novo_email:
+                usuario['email'] = novo_email
+            if nova_senha:
+                usuario['senha'] = nova_senha
+            if novo_telefone:
+                usuario['telefone'] = novo_telefone
+            
+            print("Cadastro alterado com sucesso!")
+            return  
+    print("CPF não encontrado, tente novamente.")  
+
+
+
+
+def delete_usuario_cadastro(usuario_cadastro):
+    delete = int(input("Deletação do seu cadastro, por favor digite o seu CPF:  "))
+
+    for usuario in usuario_cadastro:
+        if usuario['cpf'] == delete:
+            usuario_cadastro.remove(usuario)
+            print("Usuário deletado com sucesso")
+            return
+        
+    print("Não enconstramos seu cpf, tente novamente")  
+    delete_usuario_cadastro(usuario_cadastro)          
+
+
+def read__usuario_cadastro(usuario_cadastro):
+    for usuario in usuario_cadastro:
+        nome = usuario.get("nome")
+        email = usuario.get("email")
+        senha = usuario.get("senha")
+        telefone = usuario.get("telefone")
+        cpf = usuario.get("cpf")
+    print(f"Nome: {nome}, Email: {email}, Senha: {senha}, Telefone: {telefone}, CPF: {cpf},") 
+
+
 
 def validacao_nome(nome):
     print("**- Validação nome -**")
@@ -60,7 +116,7 @@ def validacao_telefone(telefone):
     return True
 
 
-def fazer_cadastro(nome, email, senha, telefone, usuario_cadastro):
+def fazer_cadastro(nome, email, senha, telefone, cpf, usuario_cadastro):
     while True:
         valido = True
         if not validacao_nome(nome):
@@ -77,14 +133,15 @@ def fazer_cadastro(nome, email, senha, telefone, usuario_cadastro):
                 'nome': nome,
                 'email': email,
                 'senha': senha,
-                'telefone': telefone
+                'telefone': telefone,
+                'cpf' : cpf
             })
             print("Cadastro feito com sucesso!") # Mensagem de sucesso
             break # sair do loop se tudo estiver de acordo com as validações
         else:
             print("Tente novamente, por favor")
-            nome, email, senha, telefone = cadastro_perguntas() # Repetir perguntas
-    return usuario_cadastro
+            nome, email, senha, telefone, cpf = inserir_usuario_cadastro() # Repetir perguntas
+    return usuario_cadastro   
 
 
 def login_perguntas():
@@ -106,10 +163,11 @@ def fazer_login(email_login, senha_login, usuario_cadastro):
 
 #Principal
 lista_cadastro = cadastro_lista()
-nome, email, senha, telefone = cadastro_perguntas()
-usuario_cadastro = fazer_cadastro(nome, email, senha, telefone, lista_cadastro)
-print(usuario_cadastro)
-email_login, senha_login = login_perguntas()
-usuario = fazer_login(email_login, senha_login, usuario_cadastro)
+nome, email, senha, telefone, cpf = inserir_usuario_cadastro()
+usuario_cadastro = fazer_cadastro(nome, email, senha, telefone, cpf, lista_cadastro)
+read__usuario_cadastro(usuario_cadastro)
+alterar_usuario_cadastro(usuario_cadastro)
+"""email_login, senha_login = login_perguntas()
+usuario = fazer_login(email_login, senha_login, usuario_cadastro)"""
 #login = fazer_login(email, senha, usuario_cadastro)
 #print(login)
