@@ -1,15 +1,95 @@
-#Opção 7 - caso de errado em todos as opções, escolha esse opção para te mostrar para qual número ligar para o Seguro da porto, chamar o guincho ou chamar o bombeiro
-def servixo_extra():
-    ligar_seguro = '(11) 4395-8860'
-    ligar_bombeiro = '193'
-    ligar_guincho = '(11) 3337-6786'
-    return ligar_seguro, ligar_bombeiro, ligar_guincho
+"""def lista_avaliacoes():
+    lista_avaliacao = []
+    return lista_avaliacao"""
 
-def servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho):
-    print(f'A seguir o número do Seguro da Porto: {ligar_seguro}')
-    print(f'A seguir o número do bombeiro: {ligar_bombeiro}')
-    print(f'A seguir o número do guincho da Porto Seguro: {ligar_guincho}')
 
-#Principal
-ligar_seguro, ligar_bombeiro, ligar_guincho = servixo_extra()
-servico = servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho)
+
+def inserir_avaliacao_cliente():
+    nome_cliente = input("Digite o seu nome: ")
+    nome_oficina = input("Digite a oficina que você foi atendido(a): ")
+    avaliacao = input("De uma nota de 1 a 5 para o atendimento feito: ")
+    cpf = input("Digite o seu CPF: ")
+    return nome_cliente, nome_oficina, avaliacao, cpf
+
+def append_lista(lista_avaliacao, nome_cliente, nome_oficina, avaliacao, cpf):
+    lista_avaliacao.append({
+        'nome' : nome_cliente,
+        'oficina' : nome_oficina,
+        'avaliacao' : avaliacao,
+        'cpf' : cpf
+        
+    })
+    print("Avaliacao criado com sucesso")
+    return lista_avaliacao
+    
+
+
+def alterar_avaliacao_cliente(lista_avaliacao):
+    alterar = input("Para alterar o sua avaliacao, por favor digite o seu CPF:")
+
+    for avaliacao in lista_avaliacao:
+        if avaliacao['cpf'] == alterar:
+            print("Avaliação encontrada, por favor insira os novos dados caso queira alterar, se não digite o antigo")
+            
+            novo_nome = input(f"Nome atual ({avaliacao['nome']}): ")
+            nova_oficina = input(f"Oficina atual ({avaliacao['oficina']})")
+            nova_avaliacao = input(f"Avaliação atual ({avaliacao['avaliacao']})")
+
+            if novo_nome:
+                avaliacao['nome'] = novo_nome
+            if nova_oficina:
+                avaliacao['oficina'] =  nova_oficina
+            if nova_avaliacao:
+                avaliacao['avaliacao'] = nova_avaliacao
+
+            print("Alterado com sucesso")
+            return
+
+        else:
+            print("CPF não enconstrado, tente novamente")   
+            alterar_avaliacao_cliente(lista_avaliacao) 
+
+def delete_avaliacao(lista_avaliacao):
+    delete = input("Para deletar a sua avaliacao, por favor digite o seu CPF:")
+
+    for avaliacao in lista_avaliacao:
+        if avaliacao['cpf'] == delete:
+            lista_avaliacao.remove(avaliacao)
+            print("Avaliação deletada com sucesso")
+            return
+        else:
+            print("Não encontramos seu CPF, tente novamente")
+            delete_avaliacao(lista_avaliacao)
+
+def read_avaliacao(lista_avaliacao):
+    if not lista_avaliacao:
+        print("Nenhuma avaliação encontrada.")
+        return
+    
+    for avaliacao in lista_avaliacao:
+        print(f"Nome do Cliente: {avaliacao['nome']}")
+        print(f"Nome da Oficina: {avaliacao['oficina']}")
+        print(f"Avaliação: {avaliacao['avaliacao']}")
+        print(f"CPF: {avaliacao['cpf']}")
+            
+
+
+
+
+def validacao_avaliacao(avaliacao):
+    if not avaliacao:
+        print("A avaliacao está vázia, coloque um número de 1 a 5!!")
+        return False
+    if not avaliacao < 1 or avaliacao > 5:
+        print("Avaliação não permitida, você deve fazer uma validação de 1 a 5")
+        return False
+    return True
+
+def validacao_nome_oficina(nome_oficina):
+    if not nome_oficina:
+        print("O nome da oficina está vázia, coloque o nome da oficina que você foi!!")
+        return False
+    #if not nome_oficina # vou tem que colocar quando fizer a lista das oficinas
+        print("Nome de oficina não encontrado, tente novamente colocando um nome correto")
+        return False
+    return True
