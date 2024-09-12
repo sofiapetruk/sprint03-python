@@ -11,7 +11,8 @@ def menu():
         print('[ 7 ] - Por favor, escolha essa opção se você não conseguiu achar o que queria, iremos mostrar o número do guincho, o seuguro e o bombeiro')
         print('[ 8 ] - Por favor, escolha essa opção se você quer ver as informações da empresa')
         print('[ 9 ]- Por favor, escolha essa opção se você deseja adicionar as caracteristicas do seu carro')
-        print("[ 10 ] - Encerrar o programa")
+        print("[ 10 ] -  Se você deseja adicionar novas possiveis soluções do problema")
+        print("[ 11 ] - Encerrar o programa")
 
         try:
             opcao = int(input('Digite uma opção: ')) #usuário irá escolher uma opção do print
@@ -211,7 +212,7 @@ def fazer_login(email_login, senha_login, usuario_cadastro):
 
 # --------------------- Problema do veículo ----------------------------------
 def descricao_problema():
-    desc_problema = input("Descreva o problema que está acorrendo no seu veículo: ").lower()
+    desc_problema = input("Descreva o problema que está ocorrendo no seu veículo: ").lower()
     return desc_problema
 
 def possivel_solucao(desc_problema):
@@ -251,40 +252,44 @@ def possivel_solucao(desc_problema):
             problemas de funcionamento, como dificuldade em engatar as marchas, ruídos anormais ou a perda total da transmissão.
             2. Vazamento de fluido de transmissão -> Um vazamento de fluido de transmissão pode resultar em níveis insuficientes de lubrificação, 
             levando a danos nos componentes da transmissão e a mau funcionamento.
-            3. Problemas de sincronização (transmissões manuais) -> Desgaste dos sincronizadores pode dificultar a troca de marchas.')
+            3. Problemas de sincronização (transmissões manuais) -> Desgaste dos sincronizadores pode dificultar a troca de marchas.
             4. Problemas de solenoides ou válvulas (transmissões automáticas) -> Podem resultar em trocas de marcha irregulares ou falha em  engatar
             as marchas corretas'''
     }
     for palavra, solucao in solucoes.items():
         if palavra in desc_problema:
             return solucao
-    return "Não conseguimos identificar, digite novamente, ou pessa ajuda alguém do nosso servirço"
+    return "Não conseguimos identificar, digite novamente, ou peça ajuda a alguém do nosso serviço."
 
-def inserir_descricao_problema():
-    novas_solucoes = input("Adicionar mais soluções para os problemas de carro: ")
-    return novas_solucoes
+def inserir_descricao_problema(solucoes):
+    problema = input("Digite o problema que deseja adicionar: ").lower()
+    solucao = input("Digite a solução para o problema: ")
+    solucoes[problema] = solucao
+    print("Problema e solução adicionados com sucesso.")
 
 def alterar_descricao_problema(solucoes):
     problema = input("Digite o problema que deseja alterar: ").lower()
     if problema in solucoes:
         nova_solucao = input("Digite a nova solução para o problema: ")
         solucoes[problema] = nova_solucao
-        print("Solução alterada com sucesso")
+        print("Solução alterada com sucesso.")
     else:
-        print("Problema não enconstrado")    
+        print("Problema não encontrado.")
 
 def delete_descricao_problema(solucoes):
-    problema = input("Digite o problema que deseja delete: ").lower()
+    problema = input("Digite o problema que deseja deletar: ").lower()
     if problema in solucoes:
         del solucoes[problema]
-        print("Solução deletada com sucesso")
+        print("Solução deletada com sucesso.")
     else:
-        print("Problema não enconstrado")  
+        print("Problema não encontrado.")
 
 def read_descricao_problema(solucoes, desc_problema):
-        for palavra, solucao in solucoes.items():
-            if palavra in desc_problema:
-                print(f"Solução: {solucao}")
+    if desc_problema in solucoes:
+        print(f"Solução: {solucoes[desc_problema]}")
+    else:
+        print("Problema não encontrado.")
+
         
 #------------------------- Oficinas mais próximas --------------------------------
 """"def imprimir_oficinas(lista_oficinas):
@@ -638,6 +643,7 @@ def main():
     lista_oficina = []
     lista_avaliacao = []
     carros = []
+    solucoes = {}
     while True:
         opcao = menu()
 
@@ -756,13 +762,27 @@ def main():
                 else:
                     opcao = menu()    
                     break  
+
+        elif opcao == 10:
+            while True:
+                escolha = crud_perguntas()
+                if escolha == 1:
+                    solucoes = inserir_descricao_problema()
+                elif escolha == 2:
+                    alterar_descricao_problema(solucoes)
+                elif escolha == 3:
+                    delete_descricao_problema(solucoes)
+                elif escolha == 4:
+                    read_descricao_problema(solucoes, desc_problema)    
+            
+
                 
         refazer = input("Deseja continuar? (s/n)").lower()
         if refazer != "s":
             print("Muito Obrigado")
             break
 
-        elif opcao == 10:
+        elif opcao == 11:
             print("Fim do Programa")
             break
 
