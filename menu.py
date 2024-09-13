@@ -473,7 +473,7 @@ def inserir_avaliacao_cliente():
     cpf = input("Digite o seu CPF: ")
     return nome_cliente, nome_oficina, avaliacao, cpf
 
-def append_lista(nome_cliente, nome_oficina, avaliacao, cpf, lista_avaliacao):
+def append_lista(nome_cliente, nome_oficina, avaliacao, cpf):
     lista_avaliacao.append({
         'nome' : nome_cliente,
         'oficina' : nome_oficina,
