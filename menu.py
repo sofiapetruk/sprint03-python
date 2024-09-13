@@ -216,7 +216,7 @@ def descricao_problema():
     return desc_problema
 
 def possivel_solucao(desc_problema):
-    solucoes = {
+    solucoes = ({
         "morrendo": '''
             Possíveis problemas:
             1. Problemas de ignição -> Problemas nas velas de ignição, cabos ou bobina de ignição podem causar falhas no funcionamento do motor.
@@ -255,7 +255,7 @@ def possivel_solucao(desc_problema):
             3. Problemas de sincronização (transmissões manuais) -> Desgaste dos sincronizadores pode dificultar a troca de marchas.
             4. Problemas de solenoides ou válvulas (transmissões automáticas) -> Podem resultar em trocas de marcha irregulares ou falha em  engatar
             as marchas corretas'''
-    }
+    })
     for palavra, solucao in solucoes.items():
         if palavra in desc_problema:
             return solucao
@@ -264,33 +264,57 @@ def possivel_solucao(desc_problema):
 def inserir_descricao_problema(solucoes):
     problema = input("Digite o problema que deseja adicionar: ").lower()
     solucao = input("Digite a solução para o problema: ")
-    solucoes[problema] = solucao
     print("Problema e solução adicionados com sucesso.")
+    return problema, solucao
+
+def append_solucao(problema, solucao, solucoes):
+    solucoes.append({
+        'problema': problema,
+        'solucao': solucao,
+    })
+    print("Solução criada com sucesso")
     return solucoes
 
 def alterar_descricao_problema(solucoes):
-    problema = input("Digite o problema que deseja alterar: ").lower()
-    if problema in solucoes:
-        nova_solucao = input("Digite a nova solução para o problema: ")
-        solucoes[problema] = nova_solucao
-        print("Solução alterada com sucesso.")
-        return solucoes
-    else:
-        print("Problema não encontrado.")
+    problema_busca = input("Digite o problema que deseja alterar: ").lower()
+
+    for item in solucoes:
+
+        if item['problema'] == problema_busca:
+            nova_solucao = input("Digite a nova solução para o problema: ")
+
+            if nova_solucao:
+                item['solucao'] = nova_solucao
+                print("Solução alterada com sucesso.")
+                
+            return solucoes
+
+    print("Problema não encontrado.")   
+    return solucoes
 
 def delete_descricao_problema(solucoes):
-    problema = input("Digite o problema que deseja deletar: ").lower()
-    if problema in solucoes:
-        del solucoes[problema]
-        print("Solução deletada com sucesso.")
-    else:
-        print("Problema não encontrado.")
+    problema_busca = input("Digite o problema que deseja deletar: ").lower()
 
-def read_descricao_problema(solucoes, desc_problema):
-    if desc_problema in solucoes:
-        print(f"Solução: {solucoes[desc_problema]}")
-    else:
-        print("Problema não encontrado.")
+    for item in solucoes:
+
+        if item['problema'] == problema_busca:
+
+            solucoes.remove(item)
+            print("Solução deletada com sucesso.")
+            return solucoes
+    
+    print("Problema não encontrado.")    
+    return solucoes
+
+def read_descricao_problema(solucoes):
+    if not solucoes:  # Verifica se a lista está vazia
+        print("Nenhum problema cadastrado.")
+        return
+    
+    for item in solucoes:
+        print(f"Problema: {item['problema']}")
+        print(f"Solução: {item['solucao']}")
+
 
         
 #------------------------- Oficinas mais próximas --------------------------------
@@ -331,15 +355,12 @@ def inserir_oficina():
         cnpj = input("Digite o CNPJ da sua Oficina: ")
         return nome, endereco, cnpj 
     
-    except ValueError as e:
-        print(f"Entrada inválida, verifique os dados inseridos: {e}")
-        return None, None, None
     except Exception as e:
         print(f'Ocorreu um erro: {e}')
         return None, None, None
 
 
-def append_lista_oficina(lista_oficina, nome, endereco, cnpj):
+def append_lista_oficina(nome, endereco, cnpj , lista_oficina):
     validacao = True
 
     if not validacao_nome(nome):
@@ -355,8 +376,11 @@ def append_lista_oficina(lista_oficina, nome, endereco, cnpj):
         'nome': nome,
         'endereco': endereco,
         'cnpj': cnpj
-    })
-    print("Oficina cadastrada com sucesso")
+        })
+        print("Oficina cadastrada com sucesso")
+    else:
+        print("Tente novamente, por favor")
+        
     return lista_oficina
     
 
@@ -404,17 +428,6 @@ def read_oficina(lista_oficina):
         print(f"CNPJ: {oficina['cnpj']}")
         print("-"*30)
 
-def validacao_nome(nome):
-    print("**- Validação nome -**")
-    if not nome:
-        print("O nome está vazio, coloque o seu nome!!")
-        print("------------------------")
-        return False
-    if not nome.istitle():
-        print("Por favor tente novamente, algo deu errado. A primeira letra de cada palavra tem que ser letra maiúscula")
-        print("------------------------")
-        return False
-    return True
 
 def validacao_endereco(endereco):
     print("**- Validação do ENDEREÇO -**")
@@ -435,11 +448,7 @@ def validacao_cnpj(cnpj):
         print("------------------------")
         return False  
     return True     
-
-
-   
-
-        
+    
 
 """def escolher_oficina(lista_oficinas):
     busca = input("Digite o nome ou parte do nome da oficina que deseja encontrar: ")
@@ -467,21 +476,43 @@ def validacao_cnpj(cnpj):
 
 
 def inserir_avaliacao_cliente():
-    nome_cliente = input("Digite o seu nome: ")
-    nome_oficina = input("Digite a oficina que você foi atendido(a): ")
-    avaliacao = input("De uma nota de 1 a 5 para o atendimento feito: ")
-    cpf = input("Digite o seu CPF: ")
-    return nome_cliente, nome_oficina, avaliacao, cpf
+    try:
+        nome_cliente = input("Digite o seu nome: ")
+        nome_oficina = input("Digite a oficina que você foi atendido(a): ")
+        avaliacao = int(input("De uma nota de 1 a 5 para o atendimento feito: "))
+        cpf = input("Digite o seu CPF: ")
+        return nome_cliente, nome_oficina, avaliacao, cpf
+    except ValueError:
+            print("Entrada inválida (somente números) você pode digitar")    
+            return None, None, None, None
+    except  Exception as e:
+        print(f"Ocorreu um erro: {e}")
+        return None, None, None, None
 
-def append_lista(nome_cliente, nome_oficina, avaliacao, cpf):
-    lista_avaliacao.append({
+def append_lista(nome_cliente, nome_oficina, avaliacao, cpf, lista_avaliacao):
+    validacoa = True
+
+    if not validacao_nome(nome_cliente):
+        validacoa = False
+    if not validacao_nome_oficina(nome_oficina):
+        validacoa = False    
+    if not validacao_avaliacao(avaliacao):
+        validacoa = False
+    if not validacao_cpf(cpf):
+        validacoa = False        
+
+    if validacoa:
+        lista_avaliacao.append({
         'nome' : nome_cliente,
         'oficina' : nome_oficina,
         'avaliacao' : avaliacao,
         'cpf' : cpf
         
-    })
-    print("Avaliacao criado com sucesso")
+        })
+        print("Avaliacao criado com sucesso")
+    else:
+        print("Tente novamente, por favor")
+
     return lista_avaliacao
     
 
@@ -507,9 +538,9 @@ def alterar_avaliacao_cliente(lista_avaliacao):
             print("Alterado com sucesso")
             return
 
-        else:
-            print("CPF não enconstrado, tente novamente")   
-            alterar_avaliacao_cliente(lista_avaliacao) 
+    print("CPF não enconstrado, tente novamente")   
+        
+            
 
 def delete_avaliacao(lista_avaliacao):
     delete = input("Para deletar a sua avaliacao, por favor digite o seu CPF:")
@@ -519,9 +550,9 @@ def delete_avaliacao(lista_avaliacao):
             lista_avaliacao.remove(avaliacao)
             print("Avaliação deletada com sucesso")
             return
-        else:
-            print("Não encontramos seu CPF, tente novamente")
-            delete_avaliacao(lista_avaliacao)
+        
+    print("Não encontramos seu CPF, tente novamente")        
+            
 
 def read_avaliacao(lista_avaliacao):
     if not lista_avaliacao:
@@ -542,7 +573,7 @@ def validacao_avaliacao(avaliacao):
     if not avaliacao:
         print("A avaliacao está vázia, coloque um número de 1 a 5!!")
         return False
-    if not avaliacao < 1 or avaliacao > 5:
+    if avaliacao < 1 or avaliacao > 5:
         print("Avaliação não permitida, você deve fazer uma validação de 1 a 5")
         return False
     return True
@@ -551,10 +582,7 @@ def validacao_nome_oficina(nome_oficina):
     if not nome_oficina:
         print("O nome da oficina está vázia, coloque o nome da oficina que você foi!!")
         return False
-    #if not nome_oficina # vou tem que colocar quando fizer a lista das oficinas
-        print("Nome de oficina não encontrado, tente novamente colocando um nome correto")
-        return False
-    return True
+    
 
 #-------------------------- Serviço Extra --------------------------
 def servixo_extra():
@@ -691,7 +719,7 @@ def main():
     lista_oficina = []
     lista_avaliacao = []
     carros = []
-    solucoes = {}
+    solucoes = []
     while True:
         opcao = menu()
 
@@ -713,8 +741,7 @@ def main():
                 crud_refazer = input("Deseja continuar a fazer o CRUD? (s/n)").lower() 
                 if crud_refazer == "s":
                     continue
-                else:
-                    opcao = menu()    
+                else:  
                     break    
             
         elif opcao == 2:
@@ -731,11 +758,11 @@ def main():
                 if escolha == 1:
                     solucoes = inserir_descricao_problema(solucoes)
                 elif escolha == 2:
-                    alterar_descricao_problema(solucoes)
+                    solucoes = alterar_descricao_problema(solucoes)
                 elif escolha == 3:
-                    delete_descricao_problema(solucoes)
+                    solucoes = delete_descricao_problema(solucoes)
                 elif escolha == 4:
-                    read_descricao_problema(solucoes, desc_problema)  
+                    read_descricao_problema(solucoes)  
 
         elif opcao == 5:
             while True:
@@ -756,13 +783,13 @@ def main():
                 if crud_refazer == "s":
                     continue
                 else:
-                    opcao = menu()    
+                    print("Muito Obrigado, por fazer o CRUD")
                     break    
             
                 
 
         elif opcao == 6:
-            escolher_oficina(lista_oficina)    
+            print("reterterter")    
             
 
         elif opcao == 7:
@@ -785,8 +812,7 @@ def main():
                 crud_refazer = input("Deseja continuar a fazer o CRUD? (s/n)").lower() 
                 if crud_refazer == "s":
                     continue
-                else:
-                    opcao = menu()    
+                else:  
                     break   
             
 
@@ -820,11 +846,10 @@ def main():
                 crud_refazer = input("Deseja continuar a fazer o CRUD? (s/n)").lower() 
                 if crud_refazer == "s":
                     continue
-                else:
-                    opcao = menu()    
+                else:   
                     break  
                 
-        refazer = input("Deseja continuar? (s/n)").lower()
+        refazer = input("Deseja ir para o MENU PRINCIPAL de novo?? (s/n)").lower()
         if refazer != "s":
             print("Muito Obrigado")
             break
