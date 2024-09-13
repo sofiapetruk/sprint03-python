@@ -1,17 +1,17 @@
 def menu():
     opcao = -1 #para não entrar em outras opções 
-    while opcao < 1 or opcao > 10:
+    while opcao >= 1 or opcao <= 10:
         print('--------------------------------------------------------------------------------------------------------------------')
         print('[ 1 ] - Por favor, escolha se você deseja fazer o cadastro no nosso aplicativo/site.')
         print('[ 2 ] - Por favor, escolha se você deseja fazer o login no nosso aplicativo/site.')
         print('[ 3 ] - Por favor, descreva qual é o problema que está ocorrendo com o seu veículo.')
-        print("[ 4 ] - Por favor, escolha essa opção se você deseja adicionar nova Oficinas no catalago")
-        print('[ 5 ] - Por favor, escolha esta opção para descobrir as oficinas disponíveis mais próximas de você.')
-        print('[ 6 ] - Avaliação do cliente')
-        print('[ 7 ] - Por favor, escolha essa opção se você não conseguiu achar o que queria, iremos mostrar o número do guincho, o seuguro e o bombeiro')
-        print('[ 8 ] - Por favor, escolha essa opção se você quer ver as informações da empresa')
-        print('[ 9 ]- Por favor, escolha essa opção se você deseja adicionar as caracteristicas do seu carro')
-        print("[ 10 ] -  Se você deseja adicionar novas possiveis soluções do problema")
+        print("[ 4 ] -  Se você deseja adicionar novas possiveis soluções do problema")
+        print("[ 5 ] - Por favor, escolha essa opção se você deseja adicionar nova Oficinas no catalago")
+        print('[ 6 ] - Por favor, escolha esta opção para descobrir as oficinas disponíveis mais próximas de você.')
+        print('[ 7 ] - Avaliação do cliente')
+        print('[ 8 ] - Por favor, escolha essa opção se você não conseguiu achar o que queria, iremos mostrar o número do guincho, o seuguro e o bombeiro')
+        print('[ 9 ] - Por favor, escolha essa opção se você quer ver as informações da empresa')
+        print('[ 10 ]- Por favor, escolha essa opção se você deseja adicionar as caracteristicas do seu carro') 
         print("[ 11 ] - Encerrar o programa")
 
         try:
@@ -163,7 +163,7 @@ def validacao_senha(senha):
         print("------------------------")
         return False
     if not len(senha) < 8:
-        print('Senha inválida, por favor tente novamente (tem que ser meno que 8 caracteres)')
+        print('Senha inválida, por favor tente novamente (tem que ser menor que 8 caracteres)')
         print("------------------------")
         return False
     return True
@@ -185,10 +185,10 @@ def validacao_cpf(cpf): #fazer que o cpf não pode ser da outra pessoa
     if not cpf:
         print("O CPF está vazio, coloque o seu telefone!!")
         print("------------------------")
-    if not cpf.isdigit() and len(cpf) != 14:
-        print("O CPF está incorreto, você só deve digitar os 11 números e três traços")
+    if not cpf.isdigit() and len(cpf) != 11:
+        print("O CPF está incorreto, você só deve digitar os 11 números e sem traço")
         print("------------------------")
-        return False
+        return False  
     return True
 
 
@@ -266,6 +266,7 @@ def inserir_descricao_problema(solucoes):
     solucao = input("Digite a solução para o problema: ")
     solucoes[problema] = solucao
     print("Problema e solução adicionados com sucesso.")
+    return solucoes
 
 def alterar_descricao_problema(solucoes):
     problema = input("Digite o problema que deseja alterar: ").lower()
@@ -273,6 +274,7 @@ def alterar_descricao_problema(solucoes):
         nova_solucao = input("Digite a nova solução para o problema: ")
         solucoes[problema] = nova_solucao
         print("Solução alterada com sucesso.")
+        return solucoes
     else:
         print("Problema não encontrado.")
 
@@ -327,7 +329,7 @@ def inserir_oficina():
         nome = input("Adicionar nome Oficina: ")
         endereco = input("Adicionar endereço da Oficina: ")
         cnpj = input("Digite o CNPJ da sua Oficina: ")
-        return nome, endereco, cnpj  # Remover o 'elif' incorreto
+        return nome, endereco, cnpj 
     
     except ValueError as e:
         print(f"Entrada inválida, verifique os dados inseridos: {e}")
@@ -337,34 +339,45 @@ def inserir_oficina():
         return None, None, None
 
 
-
 def append_lista_oficina(lista_oficina, nome, endereco, cnpj):
-    lista_oficina.append({
-        'nome_oficina': nome,
-        'endereco_oficina': endereco,
-        'cnpj_oficina': cnpj
+    validacao = True
+
+    if not validacao_nome(nome):
+        validacao = False
+    if not validacao_endereco(endereco):
+        validacao = False   
+    if not validacao_cnpj(cnpj):
+        validacao = False 
+
+
+    if validacao:
+        lista_oficina.append({
+        'nome': nome,
+        'endereco': endereco,
+        'cnpj': cnpj
     })
     print("Oficina cadastrada com sucesso")
     return lista_oficina
+    
 
 
 def alterar_oficina(lista_oficina):
     alterar = input("Para alterar o seu cadastro, por favor digite o seu CNPJ: ")
 
     for oficina in lista_oficina:
-        if oficina['cnpj_oficina'] == alterar:
+        if oficina['cnpj'] == alterar:
             print("Oficina encontrada, por favor insira os novos dados caso queira alterar, senão, digite os antigos")
 
-            novo_nome = input(f"Nome atual ({oficina['nome_oficina']}): ")
-            novo_endereco = input(f"Endereço atual ({oficina['endereco_oficina']}): ")
+            novo_nome = input(f"Nome atual ({oficina['nome']}): ")
+            novo_endereco = input(f"Endereço atual ({oficina['endereco']}): ")
 
             if novo_nome:
-                oficina['nome_oficina'] = novo_nome
+                oficina['nome'] = novo_nome
             if novo_endereco:
-                oficina['endereco_oficina'] = novo_endereco
+                oficina['endereco'] = novo_endereco
 
             print("Oficina alterada com sucesso")
-            return lista_oficina  # Retorna a lista atualizada
+            return lista_oficina  
 
     print("CNPJ não encontrado, tente novamente.")  
     
@@ -374,10 +387,10 @@ def delete_oficina(lista_oficina):
     delete = input("Para deletar o seu cadastro da oficina, por favor digite o seu CNPJ: ")
 
     for oficina in lista_oficina:
-        if oficina['cnpj_oficina'] == delete:
+        if oficina['cnpj'] == delete:
             lista_oficina.remove(oficina)
             print("Oficina deletada com sucesso")
-            return lista_oficina  # Retorna a lista atualizada
+            return lista_oficina  
 
     print("Não encontramos seu CNPJ, tente novamente")  
     
@@ -386,14 +399,49 @@ def delete_oficina(lista_oficina):
             
 def read_oficina(lista_oficina):   
     for oficina in lista_oficina:
-        print(f"Nome da oficina: {oficina['nome_oficina']}  ")    
-        print(f"Endereço: {oficina['endereco_oficina']}")
-        print(f"CNPJ: {oficina['cnpj_oficina']}")
+        print(f"Nome da oficina: {oficina['nome']}  ")    
+        print(f"Endereço: {oficina['endereco']}")
+        print(f"CNPJ: {oficina['cnpj']}")
         print("-"*30)
+
+def validacao_nome(nome):
+    print("**- Validação nome -**")
+    if not nome:
+        print("O nome está vazio, coloque o seu nome!!")
+        print("------------------------")
+        return False
+    if not nome.istitle():
+        print("Por favor tente novamente, algo deu errado. A primeira letra de cada palavra tem que ser letra maiúscula")
+        print("------------------------")
+        return False
+    return True
+
+def validacao_endereco(endereco):
+    print("**- Validação do ENDEREÇO -**")
+    if not endereco:
+        print("O endereço está vazio, coloque o seu endereço!!")
+        print("------------------------")
+        return False
+    return True    
+
+
+def validacao_cnpj(cnpj): 
+    print("**- Validação da CNPJ -**")
+    if not cnpj:
+        print("O cnpj está vazio, coloque o seu CNPJ!!")
+        print("------------------------")
+    if not len(cnpj) != 14:
+        print("O CNPJ está incorreto, você só deve digitar os 14 números e sem traço")
+        print("------------------------")
+        return False  
+    return True     
+
+
+   
 
         
 
-def escolher_oficina(lista_oficinas):
+"""def escolher_oficina(lista_oficinas):
     busca = input("Digite o nome ou parte do nome da oficina que deseja encontrar: ")
     resultados = []
     for oficina in lista_oficinas:
@@ -407,7 +455,7 @@ def escolher_oficina(lista_oficinas):
         return resultados[escolha]
     else:
         print("Nenhuma oficina encontrada.")
-        return None
+        return None"""
 
 
 
@@ -425,7 +473,7 @@ def inserir_avaliacao_cliente():
     cpf = input("Digite o seu CPF: ")
     return nome_cliente, nome_oficina, avaliacao, cpf
 
-def append_lista(lista_avaliacao, nome_cliente, nome_oficina, avaliacao, cpf):
+def append_lista(nome_cliente, nome_oficina, avaliacao, cpf, lista_avaliacao):
     lista_avaliacao.append({
         'nome' : nome_cliente,
         'oficina' : nome_oficina,
@@ -678,7 +726,18 @@ def main():
             print(possivel_solucao(desc_problema))
 
         elif opcao == 4:
-            
+            while True:
+                escolha = crud_perguntas()
+                if escolha == 1:
+                    solucoes = inserir_descricao_problema(solucoes)
+                elif escolha == 2:
+                    alterar_descricao_problema(solucoes)
+                elif escolha == 3:
+                    delete_descricao_problema(solucoes)
+                elif escolha == 4:
+                    read_descricao_problema(solucoes, desc_problema)  
+
+        elif opcao == 5:
             while True:
                 escolha = crud_perguntas()
 
@@ -699,13 +758,14 @@ def main():
                 else:
                     opcao = menu()    
                     break    
-
-
-        elif opcao == 5:
-            escolher_oficina(lista_oficina)
             
+                
+
         elif opcao == 6:
+            escolher_oficina(lista_oficina)    
             
+
+        elif opcao == 7:
             while True:
                 escolha = crud_perguntas()
 
@@ -727,18 +787,19 @@ def main():
                     continue
                 else:
                     opcao = menu()    
-                    break       
-
-        elif opcao == 7:
-            ligar_seguro, ligar_bombeiro, ligar_guincho = servixo_extra()
-            servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho)
+                    break   
+            
 
 
         elif opcao == 8:
-            informacoes_empresa()
+            ligar_seguro, ligar_bombeiro, ligar_guincho = servixo_extra()
+            servico_print(ligar_seguro, ligar_bombeiro, ligar_guincho)
+            
 
         elif opcao == 9:
+            informacoes_empresa()
             
+        elif opcao == 10:
             while True:
                 escolha = crud_perguntas()
 
@@ -762,20 +823,6 @@ def main():
                 else:
                     opcao = menu()    
                     break  
-
-        elif opcao == 10:
-            while True:
-                escolha = crud_perguntas()
-                if escolha == 1:
-                    solucoes = inserir_descricao_problema()
-                elif escolha == 2:
-                    alterar_descricao_problema(solucoes)
-                elif escolha == 3:
-                    delete_descricao_problema(solucoes)
-                elif escolha == 4:
-                    read_descricao_problema(solucoes, desc_problema)    
-            
-
                 
         refazer = input("Deseja continuar? (s/n)").lower()
         if refazer != "s":
